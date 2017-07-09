@@ -18,8 +18,6 @@ def host_ip_addr(host_address)
 
   end
 
-#test for address type by comparing count of 1s and 0s in host portion. if all 1s, broadcast, if all 0s, network, otherwise host
-
 puts "=================================================================="
 puts ""
 puts "Chris' IP subnet calculator"
@@ -46,7 +44,7 @@ host_portion = binary_host_portion(ip_sub_map).join
 
 if host_portion.include?('0') && !host_portion.include?('1')
   ipclass = 'network'
-elsif host_portion.include?('0') && !host_portion.include?('1')
+elsif host_portion.include?('1') && !host_portion.include?('0')
   ipclass = 'broadcast'
 else
   ipclass = 'host'
@@ -104,12 +102,14 @@ end
 
 
 v = net_valid ? 'WARNING: INVALID SUBNET' : "Your IP address: #{ip_input.chomp}/#{network_value}"
-
-puts v
-puts "=================================================================="
-puts "There are a total of #{total_networks} networks available using a /#{net_count_value} prefix."
 puts " "
-puts "This is a #{ipclass} address."
+puts " "
+puts "================================================================== "
+puts v
+puts "Address Type: #{ipclass}"
+puts "================================================================== "
+puts "Available Networks: #{total_networks}"
+puts "Subnet Prefix: /#{net_count_value} prefix."
 puts " "
 puts " "
 puts "======================BINARY CHART================================ "
