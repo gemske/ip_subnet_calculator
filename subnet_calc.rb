@@ -14,9 +14,41 @@ def binary_host_portion(ip_sub_map)
   host = iparray[network_length, 31]
 end
 
-def host_ip_addr(host_address)
-
+# returns type of ip/sub address
+# options network broadcast host
+def address_type(host_portion)
+  if host_portion.include?('0') && !host_portion.include?('1')
+    ipclass = 'network'
+  elsif host_portion.chars.reject{ |x| x == '1' }.empty?
+    ipclass = 'broadcast'
+  else
+    ipclass = 'host'
   end
+end
+
+def network_value(subnet_binary)
+  subnet_binary.to_s.split("").count("1").to_i
+end
+
+def host_value(subnet_binary)
+   subnet_binary.to_s.split("").count("0").to_i
+end
+
+def net_valid?(subnet_binary, network_value)
+  subnet_binary.chars.slice(0, network_value).include?('0')
+end
+
+def available_networks(network_value)
+  available_net = Array.new(network_value, 1)
+  total_networks = 0
+  available_net.each_with_index do |n, i|
+    total_networks += 2 ** (available_net.length-i-1) * n
+  end
+  total_networks
+end
+
+def host_ip_addr(host_address)
+end
 
 puts "=================================================================="
 puts ""
@@ -29,87 +61,30 @@ puts "Enter subnet mask."
 subnet_input = gets
 
 
-# this is calling the function through definition of a variable
 ip_binary = to_binary(ip_input)
 subnet_binary = to_binary(subnet_input)
-
 #OBJECT
 ip_sub_map = {ip: ip_binary , sub: subnet_binary}
-
-
+# you can set function calls as values in objects
+#ip_sub_map = {ip: to_binary(ip_input) , sub: to_binary(subnet_input)}
 host_portion = binary_host_portion(ip_sub_map).join
-
-
-#puts host_portion.inspect
-
-if host_portion.include?('0') && !host_portion.include?('1')
-  ipclass = 'network'
-elsif host_portion.include?('1') && !host_portion.include?('0')
-  ipclass = 'broadcast'
-else
-  ipclass = 'host'
-end
-
-
-
-
+address_type = address_type(host_portion)
 host_1_count = host_portion.count('1')
 host_0_count = host_portion.count('0')
-
-
-
-#puts " "
-#puts "------------------------------NOTES------------------------------- "#create test for host_portion, if all 0's, display network address, all 1's broadcast, else host
-#puts ip_binary
-#puts subnet_binary
-#puts host_portion#test for address type by comparing count of 1s and 0s in host portion. if all 1s, broadcast, if all 0s, network, otherwise host
-#puts "1 count"
-#puts host_1_count
-#puts "0 count"
-#puts host_0_count
-#puts "address class"
-#puts ipclass
-#puts "------------------------------------------------------------------"
-
-#array to be passed in to address_type
-address_type_array = []
-
-#next two lines count the number of 1's (network_value) and 0's (host_value)
-network_value = subnet_binary.to_s.split("").count("1")
-host_value = subnet_binary.to_s.split("").count("0")
-net_count_value = network_value.to_i
-host_count_value = host_value.to_i
-
-#test for valid subnet - see if needs to be network_value-1
-net_valid = subnet_binary.chars.slice(0, network_value).include?('0')
-
-available_net = Array.new(net_count_value,1)
-available_net.inspect
-available_net.class
-
-total_networks = 0
-available_net.each_with_index do |n, i|
-  total_networks += 2**(available_net.length-i-1) * n
-end
-
-
-
-#if net_valid
-#  v = 'is not'
-#else
-#  v = 'is'
-#end #alt method for below (expand)
-
+network_value = network_value(subnet_binary)
+host_value = host_value(subnet_binary)
+net_valid = net_valid?(subnet_binary, network_value)
+available_networks = available_networks(network_value)
 
 v = net_valid ? 'WARNING: INVALID SUBNET' : "Your IP address: #{ip_input.chomp}/#{network_value}"
 puts " "
 puts " "
 puts "================================================================== "
 puts v
-puts "Address Type: #{ipclass}"
+puts "Address Type: #{address_type}"
 puts "================================================================== "
-puts "Available Networks: #{total_networks}"
-puts "Subnet Prefix: /#{net_count_value} prefix."
+puts "Available Networks: #{available_networks}"
+puts "Subnet Prefix: /#{network_value} prefix."
 puts " "
 puts " "
 puts "======================BINARY CHART================================ "
@@ -118,7 +93,6 @@ puts "IP:     " + ip_binary
 puts "SUBNET: " + subnet_binary
 puts " "
 
-net_valid
 #net_count = network_value.to_binary.ljust(net_count_value, '0')
 #host_count = host_value.to_binary.ljust(host_count_value, '0')
 #puts net_count
