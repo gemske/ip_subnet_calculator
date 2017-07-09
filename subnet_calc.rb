@@ -7,47 +7,64 @@ def to_binary(address_input)
   binary_arr.join                            #this joins the octets together into a 32 bit string
 end
 
-
-
 #This function will pull out the network or host portion
-def binary_host_portion(total_bin)
- network_length = total_bin[1].count('1')
- iparray = total_bin[0].chars
- host = iparray[network_length, 31].join
-  end
-
-#test for address type by comparing count of 1s and 0s in host portion. if all 1s, broadcast, if all 0s, network, otherwise host
-def address_type()
+def binary_host_portion(ip_sub_map)
+  network_length = ip_sub_map[:sub].count('1')
+  iparray = ip_sub_map[:ip].chars
+  host = iparray[network_length, 31]
 end
 
+#test for address type by comparing count of 1s and 0s in host portion. if all 1s, broadcast, if all 0s, network, otherwise host
 
-#puts "Enter IP address."
-ip_input = '192.168.128.0'
-#puts "Enter subnet mask."
-subnet_input = '255.255.0.0'
+
+puts ""
+puts "Chris' IP subnet calculator"
+puts ""
+puts ""
+puts "Enter IP address."
+ip_input = gets
+puts "Enter subnet mask."
+subnet_input = gets
 
 
 # this is calling the function through definition of a variable
 ip_binary = to_binary(ip_input)
 subnet_binary = to_binary(subnet_input)
-#array to feed in IP and subnet to binary_host_portion
-ip_sub_array = [ip_binary,subnet_binary]
-host_portion = binary_host_portion(ip_sub_array)
+
+#OBJECT
+ip_sub_map = {ip: ip_binary , sub: subnet_binary}
+
+host_portion = binary_host_portion(ip_sub_map).join
+#puts host_portion.inspect
+
+if host_portion.include?('0') && !host_portion.include?('1')
+  ipclass = 'network'
+elsif host_portion.include?('0') && !host_portion.include?('1')
+  ipclass = 'broadcast'
+else
+  ipclass = 'host'
+end
+
+
+
+
 host_1_count = host_portion.count('1')
 host_0_count = host_portion.count('0')
 
 
 
-puts " "
-puts "------------------------------NOTES------------------------------- "#create test for host_portion, if all 0's, display network address, all 1's broadcast, else host
-puts ip_binary
-puts subnet_binary
-puts host_portion#test for address type by comparing count of 1s and 0s in host portion. if all 1s, broadcast, if all 0s, network, otherwise host
-puts "1 count"
-puts host_1_count
-puts "0 count"
-puts host_0_count
-puts "------------------------------------------------------------------"
+#puts " "
+#puts "------------------------------NOTES------------------------------- "#create test for host_portion, if all 0's, display network address, all 1's broadcast, else host
+#puts ip_binary
+#puts subnet_binary
+#puts host_portion#test for address type by comparing count of 1s and 0s in host portion. if all 1s, broadcast, if all 0s, network, otherwise host
+#puts "1 count"
+#puts host_1_count
+#puts "0 count"
+#puts host_0_count
+#puts "address class"
+#puts ipclass
+#puts "------------------------------------------------------------------"
 
 #array to be passed in to address_type
 address_type_array = []
@@ -77,12 +94,15 @@ end
 #else
 #  v = 'is'
 #end #alt method for below (expand)
+
+
 v = net_valid ? 'WARNING: INVALID SUBNET' : "Your IP address: #{ip_input.chomp}/#{network_value}"
 
 puts v
+puts "=================================================================="
 puts "There are a total of #{total_networks} networks available using a /#{net_count_value} prefix."
 puts " "
-puts " "
+puts "This is a #{ipclass} address."
 puts " "
 
 net_valid
