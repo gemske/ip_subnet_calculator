@@ -14,9 +14,13 @@ def binary_host_portion(ip_sub_map)
   host = iparray[network_length, 31]
 end
 
+def host_ip_addr(host_address)
+
+  end
+
 #test for address type by comparing count of 1s and 0s in host portion. if all 1s, broadcast, if all 0s, network, otherwise host
 
-
+puts "=================================================================="
 puts ""
 puts "Chris' IP subnet calculator"
 puts ""
@@ -34,7 +38,10 @@ subnet_binary = to_binary(subnet_input)
 #OBJECT
 ip_sub_map = {ip: ip_binary , sub: subnet_binary}
 
+
 host_portion = binary_host_portion(ip_sub_map).join
+
+
 #puts host_portion.inspect
 
 if host_portion.include?('0') && !host_portion.include?('1')
@@ -103,6 +110,12 @@ puts "=================================================================="
 puts "There are a total of #{total_networks} networks available using a /#{net_count_value} prefix."
 puts " "
 puts "This is a #{ipclass} address."
+puts " "
+puts " "
+puts "======================BINARY CHART================================ "
+puts " "
+puts "IP:     " + ip_binary
+puts "SUBNET: " + subnet_binary
 puts " "
 
 net_valid
