@@ -8,16 +8,49 @@ def to_binary(address_input)
 end
 
 
-puts "Enter IP address."
-ip_input = gets
-puts "Enter subnet mask."
-subnet_input = gets
+
+#This function will pull out the network or host portion
+def binary_host_portion(total_bin)
+ network_length = total_bin[1].count('1')
+ iparray = total_bin[0].chars
+ host = iparray[network_length, 31].join
+  end
+
+#test for address type by comparing count of 1s and 0s in host portion. if all 1s, broadcast, if all 0s, network, otherwise host
+def address_type()
+end
+
+
+#puts "Enter IP address."
+ip_input = '192.168.128.0'
+#puts "Enter subnet mask."
+subnet_input = '255.255.0.0'
+
 
 # this is calling the function through definition of a variable
 ip_binary = to_binary(ip_input)
 subnet_binary = to_binary(subnet_input)
+#array to feed in IP and subnet to binary_host_portion
+ip_sub_array = [ip_binary,subnet_binary]
+host_portion = binary_host_portion(ip_sub_array)
+host_1_count = host_portion.count('1')
+host_0_count = host_portion.count('0')
+
+
+
+puts " "
+puts "------------------------------NOTES------------------------------- "#create test for host_portion, if all 0's, display network address, all 1's broadcast, else host
 puts ip_binary
 puts subnet_binary
+puts host_portion#test for address type by comparing count of 1s and 0s in host portion. if all 1s, broadcast, if all 0s, network, otherwise host
+puts "1 count"
+puts host_1_count
+puts "0 count"
+puts host_0_count
+puts "------------------------------------------------------------------"
+
+#array to be passed in to address_type
+address_type_array = []
 
 #next two lines count the number of 1's (network_value) and 0's (host_value)
 network_value = subnet_binary.to_s.split("").count("1")
@@ -29,7 +62,6 @@ host_count_value = host_value.to_i
 net_valid = subnet_binary.chars.slice(0, network_value).include?('0')
 
 available_net = Array.new(net_count_value,1)
-
 available_net.inspect
 available_net.class
 
@@ -38,15 +70,21 @@ available_net.each_with_index do |n, i|
   total_networks += 2**(available_net.length-i-1) * n
 end
 
+
+
 #if net_valid
 #  v = 'is not'
 #else
 #  v = 'is'
-#end
-
+#end #alt method for below (expand)
 v = net_valid ? 'WARNING: INVALID SUBNET' : "Your IP address: #{ip_input.chomp}/#{network_value}"
+
 puts v
 puts "There are a total of #{total_networks} networks available using a /#{net_count_value} prefix."
+puts " "
+puts " "
+puts " "
+
 net_valid
 #net_count = network_value.to_binary.ljust(net_count_value, '0')
 #host_count = host_value.to_binary.ljust(host_count_value, '0')
