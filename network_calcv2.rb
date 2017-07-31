@@ -1,6 +1,6 @@
 require 'ipaddress'
 #puts "IP:"
-ip_input = '192.168.14.0/19'
+ip_input = '192.168.14.0/30'
 
 def parse_ip_input(ip_input)
   IPAddress.parse ip_input

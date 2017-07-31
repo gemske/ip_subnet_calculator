@@ -1,7 +1,7 @@
 require 'rubygems'  # optional
 require 'ipaddress'
 # this is defining the function to convert to binary from ip array
-def to_binary(address_input)
+def to_binary_octets(address_input)
   address_arr = address_input.split('.')
   binary_arr = address_arr.map do |octet|     #these two lines are turning the values of the array into integers, back to strings
     octet.to_i.to_s(2).ljust(8, '0')         #of binary, and making sure there are 8 values
@@ -64,12 +64,12 @@ puts "Enter subnet mask."
 subnet_input = gets
 #TERMINAL
 
-ip_binary = to_binary(ip_input)
-subnet_binary = to_binary(subnet_input)
+ip_binary = to_binary_octets(ip_input)
+subnet_binary = to_binary_octets(subnet_input)
 #OBJECT
 ip_sub_map = {ip: ip_binary , sub: subnet_binary}
 # you can set function calls as values in objects
-#ip_sub_map = {ip: to_binary(ip_input) , sub: to_binary(subnet_input)}
+#ip_sub_map = {ip: to_binary_octets(ip_input) , sub: to_binary_octets(subnet_input)}
 host_portion = binary_host_portion(ip_sub_map).join
 address_type = address_type(host_portion)
 host_1_count = host_portion.count('1')
@@ -99,7 +99,7 @@ puts " "
 #TERMINAL
 
 
-#net_count = network_bits.to_binary.ljust(net_count_value, '0')
-#host_count = host_value.to_binary.ljust(host_count_value, '0')
+#net_count = network_bits.to_binary_octets.ljust(net_count_value, '0')
+#host_count = host_value.to_binary_octets.ljust(host_count_value, '0')
 #puts net_count
 #puts host_count
